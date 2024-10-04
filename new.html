@@ -91,7 +91,7 @@
       }
 
       async function fetchVideos() {
-        const baseUrl = 'YOUR_DEPLOYED_APP_URL_HERE';
+        const baseUrl = 'https://script.google.com/macros/s/AKfycbwFHopkpLgWgJypuI2_VDrCxLliRP0_S5ymdfhKaW7SJklnVCfeRz9awMBTYZspyhwI/exec'
         const url = `${baseUrl}?action=search&query=${encodeURIComponent(currentQuery)}&amount=${amountPerPage}&page=${currentPage}&sortBy=${currentSortBy}&sortOrder=${currentSortOrder}`;
 
         try {
