@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <base target="_top">
+    <title>Share a Video</title>
+    <meta charset="utf-8" />
+    <style>
+      body { font-family: Arial, sans-serif; margin: 20px; }
+      input[type="text"] { width: 300px; }
+    </style>
+  </head>
+  <body>
+    <h2>Search Spreadsheet Entries</h2>
+
+    <a href="https://docs.google.com/forms/d/e/1FAIpQLSeNYleWfn4rAaVg742pMkt_OPLqyRpc6F6W0wxpF-8EGCbteA/viewform?usp=pp_url&entry.181880682=CC0+1.0" target="_blank">Upload a video</a>
+    <hr />
+
+    <input type="text" id="query" placeholder="Enter your search query">
+    <button onclick="submitQuery()">Search</button>
+    <pre id="results"></pre>
+
+    <script>
+      async function submitQuery() {
+        const query = document.getElementById('query').value;
+        if (!query) {
+          alert('Please enter a search query.');
+          return;
+        }
+
+        const baseUrl = 'https://script.google.com/macros/s/AKfycbwFHopkpLgWgJypuI2_VDrCxLliRP0_S5ymdfhKaW7SJklnVCfeRz9awMBTYZspyhwI/exec';
+        const url = `${baseUrl}?action=searchEmbeddings&query=${encodeURIComponent(query)}`;
+
+        try {
+            const response = await fetch(url, {
+              method: 'GET'
+            });
+
+            if (!response.ok) {
+              throw new Error(`HTTP error! Status: ${response.status}`);
+            }
+
+            const results = await response.json();
+            displayResults(results);
+        } catch (error) {
+          console.error('Error during GET request:', error);
+          alert('An error occurred while processing your request.');
+        }
+      }
+
+
+      function displayResults(data) {
+        const { query, results } = data || {}
+        console.log('displayResults-results', results)
+        const resultsNode = document.getElementById('results');
+        resultsNode.innerHTML = '';
+
+        if (!results || !Array.isArray(results) || !results.length) {
+          resultsNode.innerHTML = '<p>No matching results found.</p>';
+          return;
+        }
+
+        const parsedResults = results.map(result => {
+          console.log('result', result)
+          console.log('keys', Object.keys('result'))
+          const fileID = result["Upload Video"]
+          return {
+            ...result,
+            fileID,
+            thumbnail: `https://drive.google.com/thumbnail?id=${fileID}`,
+            link: `https://drive.google.com/file/d/${fileID}/view`
+          }
+        })
+        
+        console.log('parsedResults', parsedResults)
+        
+        resultsNode.innerHTML = JSON.stringify(parsedResults, null, 2)
+      }
+    </script>
+  </body>
+</html>
