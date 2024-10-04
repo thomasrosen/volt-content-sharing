@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <base target="_top">
+    <title>Share a Video</title>
+    <meta charset="utf-8" />
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 20px;
+      }
+      .search-bar {
+        margin-bottom: 20px;
+      }
+      .search-bar input[type="text"] {
+        width: 300px;
+      }
+      .video-grid {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px;
+      }
+      .video-card {
+        border: 1px solid #ccc;
+        padding: 10px;
+        width: calc(33% - 40px);
+        box-sizing: border-box;
+      }
+      .video-card img {
+        max-width: 100%;
+      }
+      .pagination {
+        margin-top: 20px;
+      }
+      .pagination button {
+        margin-right: 5px;
+      }
+    </style>
+  </head>
+  <body>
+    <h2>Search Videos</h2>
+
+    <a href="https://docs.google.com/forms/d/e/1FAIpQLSeNYleWfn4rAaVg742pMkt_OPLqyRpc6F6W0wxpF-8EGCbteA/viewform?usp=pp_url&entry.181880682=CC0+1.0" target="_blank">Upload a video</a>
+    <hr />
+
+    <div class="search-bar">
+      <input type="text" id="query" placeholder="Enter your search query">
+      <select id="sortBy">
+        <option value="date_desc">Sort by Date Descending</option>
+        <option value="date_asc">Sort by Date Ascending</option>
+        <option value="similarity_desc">Sort by Similarity Descending</option>
+        <option value="similarity_asc">Sort by Similarity Ascending</option>
+      </select>
+      <button onclick="submitQuery()">Search</button>
+      <button onclick="resetSearch()">Reset</button>
+    </div>
+
+    <div class="video-grid" id="results"></div>
+
+    <div class="pagination" id="pagination"></div>
+
+    <script>
+      let currentPage = 1;
+      let currentQuery = '';
+      let currentSortBy = 'date';
+      let currentSortOrder = 'desc';
+      const amountPerPage = 10;
+
+      document.addEventListener('DOMContentLoaded', () => {
+        // Load initial videos
+        fetchVideos();
+      });
+
+      function resetSearch() {
+        document.getElementById('query').value = '';
+        document.getElementById('sortBy').value = 'date_desc';
+        currentQuery = '';
+        currentSortBy = 'date';
+        currentSortOrder = 'desc';
+        currentPage = 1;
+        fetchVideos();
+      }
+
+      function submitQuery() {
+        const queryInput = document.getElementById('query').value.trim();
+        currentQuery = queryInput;
+        const sortByValue = document.getElementById('sortBy').value;
+        [currentSortBy, currentSortOrder] = sortByValue.split('_');
+        currentPage = 1;
+        fetchVideos();
+      }
+
+      async function fetchVideos() {
+        const baseUrl = 'YOUR_DEPLOYED_APP_URL_HERE';
+        const url = `${baseUrl}?action=search&query=${encodeURIComponent(currentQuery)}&amount=${amountPerPage}&page=${currentPage}&sortBy=${currentSortBy}&sortOrder=${currentSortOrder}`;
+
+        try {
+          const response = await fetch(url, {
+            method: 'GET'
+          });
+
+          if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+          }
+
+          const data = await response.json();
+          displayResults(data.results);
+        } catch (error) {
+          console.error('Error during GET request:', error);
+          alert('An error occurred while processing your request.');
+        }
+      }
+
+      function displayResults(results) {
+        const resultsNode = document.getElementById('results');
+        resultsNode.innerHTML = '';
+
+        if (!results || !Array.isArray(results) || !results.length) {
+          resultsNode.innerHTML = '<p>No matching results found.</p>';
+          return;
+        }
+
+        results.forEach(result => {
+          const fileID = result.upload_video;
+          const thumbnail = `https://drive.google.com/thumbnail?id=${fileID}`;
+          const link = `https://drive.google.com/file/d/${fileID}/view`;
+
+          const card = document.createElement('div');
+          card.className = 'video-card';
+
+          card.innerHTML = `
+            <a href="${link}" target="_blank">
+              <img src="${thumbnail}" alt="Video Thumbnail">
+            </a>
+            <h3>${result.title || 'No Title'}</h3>
+            <p>${result.description || 'No Description'}</p>
+            ${currentQuery ? `<p>Similarity: ${(result.similarity * 100).toFixed(2)}%</p>` : ''}
+          `;
+
+          resultsNode.appendChild(card);
+        });
+
+        // Update pagination
+        updatePagination(results.length);
+      }
+
+      function updatePagination(resultsLength) {
+        const paginationNode = document.getElementById('pagination');
+        paginationNode.innerHTML = '';
+
+        // Create Previous button
+        if (currentPage > 1) {
+          const prevButton = document.createElement('button');
+          prevButton.textContent = 'Previous';
+          prevButton.onclick = () => {
+            currentPage--;
+            fetchVideos();
+          };
+          paginationNode.appendChild(prevButton);
+        }
+
+        // Create Next button if there are more results
+        if (resultsLength === amountPerPage) {
+          const nextButton = document.createElement('button');
+          nextButton.textContent = 'Next';
+          nextButton.onclick = () => {
+            currentPage++;
+            fetchVideos();
+          };
+          paginationNode.appendChild(nextButton);
+        }
+      }
+    </script>
+  </body>
+</html>
