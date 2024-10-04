@@ -92,7 +92,7 @@
 
       async function fetchVideos() {
         const baseUrl = 'https://script.google.com/macros/s/AKfycbwFHopkpLgWgJypuI2_VDrCxLliRP0_S5ymdfhKaW7SJklnVCfeRz9awMBTYZspyhwI/exec';
-        const url = `${baseUrl}?action=searchEmbeddings&query=${encodeURIComponent(currentQuery)}&amount=${amountPerPage}&page=${currentPage}&sortBy=${currentSortBy}&sortOrder=${currentSortOrder}`;
+        const url = `${baseUrl}?action=search&query=${encodeURIComponent(currentQuery)}&amount=${amountPerPage}&page=${currentPage}&sortBy=${currentSortBy}&sortOrder=${currentSortOrder}`;
 
         try {
           const response = await fetch(url, {
