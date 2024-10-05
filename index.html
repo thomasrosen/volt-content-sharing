@@ -5,6 +5,15 @@
     <title>Share a Video</title>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+
+    .card {
+        background: rgba(var(--on-background-contrast-rgb), var(--alpha-less));
+        box-shadow: inset 0 0 0 1px rgba(var(--on-background-contrast-rgb), var(--alpha-less));
+    }
+    </style>
+    <!--
     <style>
       body {
         font-family: Ubuntu, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif, sans-serif;
@@ -40,8 +49,9 @@
         margin-right: 5px;
       }
     </style>
+  -->
   </head>
-  <body>
+  <body class="basis_0_3">
     <h2>Search Videos</h2>
 
     <a href="https://docs.google.com/forms/d/e/1FAIpQLSeNYleWfn4rAaVg742pMkt_OPLqyRpc6F6W0wxpF-8EGCbteA/viewform?usp=pp_url&entry.181880682=CC0+1.0" target="_blank">Upload a video</a>
@@ -138,13 +148,12 @@
           const link = `https://drive.google.com/file/d/${fileID}/view`;
 
           const card = document.createElement('div');
-          card.className = 'video-card';
+          card.className = 'card';
 
           card.innerHTML = `
             <a href="${link}" target="_blank">
               <img src="${thumbnail}" alt="Video Thumbnail">
             </a>
-            <h3>${result.title || 'No Title'}</h3>
             <p>${result.description || 'No Description'}</p>
             ${currentQuery ? `<p>Similarity: ${(result.similarity * 100).toFixed(2)}%</p>` : ''}
           `;
