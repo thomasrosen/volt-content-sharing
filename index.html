@@ -216,7 +216,7 @@
           card.target = '_blank';
           card.href = link;
 
-          const hasMetaData = result.license || result.language || timestamp // || (currentQuery && !!result.similarity)
+          const hasMetaData = result.license || result.language || result.timestamp // || (currentQuery && !!result.similarity)
 
           card.innerHTML = [
             `<img src="${thumbnail}" alt="Video Thumbnail">`,
