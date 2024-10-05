@@ -10,7 +10,7 @@
       body {
         padding: var(--basis_x2);
       }
-      
+
       .video-grid {
         display: flex;
         flex-wrap: wrap;
@@ -163,13 +163,13 @@
           const thumbnail = `https://drive.google.com/thumbnail?id=${fileID}`;
           const link = `https://drive.google.com/file/d/${fileID}/view`;
 
-          const card = document.createElement('div');
+          const card = document.createElement('a');
           card.className = 'card';
+          card.target = '_blank';
+          card.href = 'link';
 
           card.innerHTML = `
-            <a href="${link}" target="_blank">
-              <img src="${thumbnail}" alt="Video Thumbnail">
-            </a>
+            <img src="${thumbnail}" alt="Video Thumbnail">
             <p>${result.description || 'No Description'}</p>
             ${currentQuery ? `<p>Similarity: ${(result.similarity * 100).toFixed(2)}%</p>` : ''}
           `;
