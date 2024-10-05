@@ -37,6 +37,16 @@
       .card img {
         max-width: 100%;
       }
+
+      .search_bar {
+        display: flex;
+        flex-wrap: wrap;
+        gap: var(--basis_x2);
+      }
+      .search_bar input[type="text"] {
+        width: 300px;
+        max-width: 100%;
+      }
     </style>
     <!--
     <style>
@@ -81,8 +91,8 @@
 
     <hr />
 
-    <div class="search-bar">
-      <input type="text" id="query" placeholder="Enter your search query">
+    <div class="search_bar">
+      <input type="text" id="query" placeholder="Search…">
       <select id="sortBy">
         <option value="date_desc">Sort by Date Descending</option>
         <option value="date_asc">Sort by Date Ascending</option>
