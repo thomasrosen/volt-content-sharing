@@ -52,6 +52,10 @@
       .clickable_card img {
         max-width: 100%;
       }
+      .clickable_card p {
+        opacity: 0.8;
+        margin: 0 calc(1.85 * var(--basis)) var(--basis_x2) calc(1.85 * var(--basis));
+      }
 
       .search_bar {
         display: flex;
@@ -205,8 +209,8 @@
 
           card.innerHTML = `
             <img src="${thumbnail}" alt="Video Thumbnail">
-            <p>${result.description || 'No Description'}</p>
-            ${currentQuery ? `<p>Similarity: ${(result.similarity * 100).toFixed(2)}%</p>` : ''}
+            <p class="body2">${result.description || 'No Description'}</p>
+            ${currentQuery ? `<p class="body2">Similarity: ${(result.similarity * 100).toFixed(2)}%</p>` : ''}
           `;
 
           resultsNode.appendChild(card);
