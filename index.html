@@ -28,6 +28,11 @@
         background: rgba(var(--on-background-contrast-rgb), var(--alpha-less));
         box-shadow: inset 0 0 0 1px rgba(var(--on-background-contrast-rgb), var(--alpha-less));
         padding: var(--basis);
+        transform: scale(1);
+        transition: transform var(--timing);
+      }
+      .card:hover {
+        transform: scale(1.1);
       }
       .card img {
         max-width: 100%;
