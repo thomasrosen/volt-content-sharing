@@ -4,55 +4,126 @@
     <base target="_top">
     <title>Share a Video</title>
     <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <style>
-      body { font-family: Arial, sans-serif; margin: 20px; }
-      input[type="text"] { width: 300px; }
+      body {
+        font-family: Ubuntu, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif, sans-serif;
+        margin: 20px;
+
+        background: #502379;
+        color: white;
+      }
+      .search-bar {
+        margin-bottom: 20px;
+      }
+      .search-bar input[type="text"] {
+        width: 300px;
+      }
+      .video-grid {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px;
+      }
+      .video-card {
+        border: 1px solid white;
+        padding: 10px;
+        width: calc(33% - 40px);
+        box-sizing: border-box;
+      }
+      .video-card img {
+        max-width: 100%;
+      }
+      .pagination {
+        margin-top: 20px;
+      }
+      .pagination button {
+        margin-right: 5px;
+      }
     </style>
   </head>
   <body>
-    <h2>Search Spreadsheet Entries</h2>
+    <h2>Search Videos</h2>
 
     <a href="https://docs.google.com/forms/d/e/1FAIpQLSeNYleWfn4rAaVg742pMkt_OPLqyRpc6F6W0wxpF-8EGCbteA/viewform?usp=pp_url&entry.181880682=CC0+1.0" target="_blank">Upload a video</a>
     <hr />
 
-    <input type="text" id="query" placeholder="Enter your search query">
-    <button onclick="submitQuery()">Search</button>
-    <pre id="results"></pre>
+    <div class="search-bar">
+      <input type="text" id="query" placeholder="Enter your search query">
+      <select id="sortBy">
+        <option value="date_desc">Sort by Date Descending</option>
+        <option value="date_asc">Sort by Date Ascending</option>
+        <option value="similarity_desc">Sort by Similarity Descending</option>
+        <option value="similarity_asc">Sort by Similarity Ascending</option>
+      </select>
+      <button onclick="submitQuery()">Search</button>
+      <button onclick="resetSearch()">Reset</button>
+    </div>
+
+    <div class="video-grid" id="results"></div>
+
+    <div class="pagination" id="pagination"></div>
 
     <script>
-      async function submitQuery() {
-        const query = document.getElementById('query').value;
-        if (!query) {
-          alert('Please enter a search query.');
-          return;
-        }
+      let currentPage = 1;
+      let currentQuery = '';
+      let currentSortBy = 'date';
+      let currentSortOrder = 'desc';
+      const amountPerPage = 10;
 
+      document.addEventListener('DOMContentLoaded', () => {
+        // Load initial videos
+        fetchVideos();
+      });
 
+      function resetSearch() {
+        document.getElementById('query').value = '';
+        document.getElementById('sortBy').value = 'date_desc';
+        currentQuery = '';
+        currentSortBy = 'date';
+        currentSortOrder = 'desc';
+        currentPage = 1;
+        fetchVideos();
+      }
+
+      function submitQuery() {
+        const queryInput = document.getElementById('query').value.trim();
+        currentQuery = queryInput;
+        const sortByValue = document.getElementById('sortBy').value;
+        [currentSortBy, currentSortOrder] = sortByValue.split('_');
+        currentPage = 1;
+        fetchVideos();
+      }
+
+      async function fetchVideos() {
         const deploymentID = 'AKfycbxgRSx-JJzBnaOrAmVud6qpy4ke1VKqIdKDiZRdODX_mEf6NxBg_108DUmIrxKx9xcRtA'
         const baseUrl = `https://script.google.com/macros/s/${deploymentID}/exec`;
-        const url = `${baseUrl}?action=searchEmbeddings&query=${encodeURIComponent(query)}`;
+        const url = `${baseUrl}?action=search&query=${encodeURIComponent(currentQuery)}&amount=${amountPerPage}&page=${currentPage}&sortBy=${currentSortBy}&sortOrder=${currentSortOrder}`;
 
         try {
-            const response = await fetch(url, {
-              method: 'GET'
-            });
+          const response = await fetch(url, {
+            method: 'GET',
+      redirect: "follow",
+      // method: "POST",
+      // body: JSON.stringify(DATA),
+      headers: {
+        "Content-Type": "text/plain;charset=utf-8",
+      },
+      // mode: "no-cors",
+          });
 
-            if (!response.ok) {
-              throw new Error(`HTTP error! Status: ${response.status}`);
-            }
+          if (!response.ok) {
+            throw new Error(`HTTP error! Status: ${response.status}`);
+          }
 
-            const results = await response.json();
-            displayResults(results);
+          const data = await response.json();
+          displayResults(data.results);
         } catch (error) {
           console.error('Error during GET request:', error);
           alert('An error occurred while processing your request.');
         }
       }
 
-
-      function displayResults(data) {
-        const { query, results } = data || {}
-        console.log('displayResults-results', results)
+      function displayResults(results) {
         const resultsNode = document.getElementById('results');
         resultsNode.innerHTML = '';
 
@@ -61,21 +132,55 @@
           return;
         }
 
-        const parsedResults = results.map(result => {
-          console.log('result', result)
-          console.log('keys', Object.keys('result'))
-          const fileID = result["Upload Video"]
-          return {
-            ...result,
-            fileID,
-            thumbnail: `https://drive.google.com/thumbnail?id=${fileID}`,
-            link: `https://drive.google.com/file/d/${fileID}/view`
-          }
-        })
-        
-        console.log('parsedResults', parsedResults)
-        
-        resultsNode.innerHTML = JSON.stringify(parsedResults, null, 2)
+        results.forEach(result => {
+          const fileID = result.upload_video;
+          const thumbnail = `https://drive.google.com/thumbnail?id=${fileID}`;
+          const link = `https://drive.google.com/file/d/${fileID}/view`;
+
+          const card = document.createElement('div');
+          card.className = 'video-card';
+
+          card.innerHTML = `
+            <a href="${link}" target="_blank">
+              <img src="${thumbnail}" alt="Video Thumbnail">
+            </a>
+            <h3>${result.title || 'No Title'}</h3>
+            <p>${result.description || 'No Description'}</p>
+            ${currentQuery ? `<p>Similarity: ${(result.similarity * 100).toFixed(2)}%</p>` : ''}
+          `;
+
+          resultsNode.appendChild(card);
+        });
+
+        // Update pagination
+        updatePagination(results.length);
+      }
+
+      function updatePagination(resultsLength) {
+        const paginationNode = document.getElementById('pagination');
+        paginationNode.innerHTML = '';
+
+        // Create Previous button
+        if (currentPage > 1) {
+          const prevButton = document.createElement('button');
+          prevButton.textContent = 'Previous';
+          prevButton.onclick = () => {
+            currentPage--;
+            fetchVideos();
+          };
+          paginationNode.appendChild(prevButton);
+        }
+
+        // Create Next button if there are more results
+        if (resultsLength === amountPerPage) {
+          const nextButton = document.createElement('button');
+          nextButton.textContent = 'Next';
+          nextButton.onclick = () => {
+            currentPage++;
+            fetchVideos();
+          };
+          paginationNode.appendChild(nextButton);
+        }
       }
     </script>
   </body>
