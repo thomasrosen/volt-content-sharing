@@ -225,7 +225,7 @@
             result.language && `<p class="body2">${result.language}</p>`,
             result.license && `<p class="body2">License: ${result.license}</p>`,
             result.timestamp && `<p class="body2">${result.timestamp}</p>`,
-            // currentQuery && !!result.similarity && `<p class="body2">Search Score: ${(result.similarity * 100).toFixed(2)}%</p>`,
+            currentQuery && !!result.similarity && `<p class="body2">Search Score: ${(result.similarity * 100).toFixed(2)}%</p>`,
           ].filter(Boolean).join('')
 
           resultsNode.appendChild(card);
