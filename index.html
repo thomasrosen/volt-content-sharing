@@ -207,7 +207,7 @@
         }
 
         results.forEach(result => {
-          const fileID = result.upload_video;
+          const fileID = result.video_id;
           const thumbnail = `https://drive.google.com/thumbnail?id=${fileID}`;
           const link = `https://drive.google.com/file/d/${fileID}/view`;
 
@@ -216,11 +216,17 @@
           card.target = '_blank';
           card.href = link;
 
-          card.innerHTML = `
-            <img src="${thumbnail}" alt="Video Thumbnail">
-            <p class="body2">${result.description || 'No Description'}</p>
-            ${currentQuery ? `<p class="body2">Similarity: ${(result.similarity * 100).toFixed(2)}%</p>` : ''}
-          `;
+          const hasMetaData = result.license || result.language || timestamp // || (currentQuery && !!result.similarity)
+
+          card.innerHTML = [
+            `<img src="${thumbnail}" alt="Video Thumbnail">`,
+            result.description && `<p class="body2">${result.description}</p>`,
+            result.description && hasMetaData && `<hr />`,
+            result.language && `<p class="body2">Language: ${result.language}</p>`,
+            result.license && `<p class="body2">License: ${result.license}</p>`,
+            result.timestamp && `<p class="body2">Uploaded: ${result.timestamp}</p>`,
+            // currentQuery && !!result.similarity && `<p class="body2">Search Score: ${(result.similarity * 100).toFixed(2)}%</p>`,
+          ].filter(Boolean).join('')
 
           resultsNode.appendChild(card);
         });
