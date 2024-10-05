@@ -333,7 +333,7 @@
     min-width: 0px;
     outline: none;
     border: none;
-    margin: var(--basis);
+    /* margin: var(--basis); */
   }
   
   button,
