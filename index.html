@@ -76,7 +76,7 @@
     <h2>Search Videos</h2>
 
     <a href="https://docs.google.com/forms/d/e/1FAIpQLSeNYleWfn4rAaVg742pMkt_OPLqyRpc6F6W0wxpF-8EGCbteA/viewform?usp=pp_url&entry.181880682=CC0+1.0" target="_blank">
-      <button>Upload a video</button>
+      <button class="default">Upload a video</button>
     </a>
 
     <hr />
@@ -89,12 +89,12 @@
         <option value="similarity_desc">Sort by Similarity Descending</option>
         <option value="similarity_asc">Sort by Similarity Ascending</option>
       </select>
-      <button onclick="submitQuery()">Search</button>
-      <button onclick="resetSearch()">Reset</button>
+      <button onclick="submitQuery()" class="default">Search</button>
+      <button onclick="resetSearch()" class="red">Reset</button>
     </div>
 
     <hr />
-    
+
     <div class="video-grid" id="results"></div>
 
     <div class="pagination" id="pagination"></div>
@@ -198,6 +198,7 @@
         // Create Previous button
         if (currentPage > 1) {
           const prevButton = document.createElement('button');
+          prevButton.classList.add('text')
           prevButton.textContent = 'Previous';
           prevButton.onclick = () => {
             currentPage--;
@@ -209,6 +210,7 @@
         // Create Next button if there are more results
         if (resultsLength === amountPerPage) {
           const nextButton = document.createElement('button');
+          nextButton.classList.add('text')
           nextButton.textContent = 'Next';
           nextButton.onclick = () => {
             currentPage++;
