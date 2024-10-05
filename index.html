@@ -41,10 +41,17 @@
         padding: var(--basis_x4);
         transition: background-color var(--timing);
         --borderRadius: var(--basis_x2);
+
+        gap: var(--basis_x2);
+        display: flex;
+        flex-direction: column;
       }
       .clickable_card img {
         max-width: 100%;
         border-radius: var(--basis);
+      }
+      .clickable_card p {
+        margin: 0;
       }
 
       .search_bar {
