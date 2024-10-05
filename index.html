@@ -176,13 +176,13 @@
         try {
           const response = await fetch(url, {
             method: 'GET',
-      redirect: "follow",
-      // method: "POST",
-      // body: JSON.stringify(DATA),
-      headers: {
-        "Content-Type": "text/plain;charset=utf-8",
-      },
-      // mode: "no-cors",
+            redirect: "follow",
+            // method: "POST",
+            // body: JSON.stringify(DATA),
+            headers: {
+              "Content-Type": "text/plain;charset=utf-8",
+            },
+            // mode: "no-cors",
           });
 
           if (!response.ok) {
@@ -222,9 +222,9 @@
             `<img src="${thumbnail}" alt="Video Thumbnail">`,
             result.description && `<p class="body2">${result.description}</p>`,
             result.description && hasMetaData && `<hr />`,
-            result.language && `<p class="body2">Language: ${result.language}</p>`,
+            result.language && `<p class="body2">${result.language}</p>`,
             result.license && `<p class="body2">License: ${result.license}</p>`,
-            result.timestamp && `<p class="body2">Uploaded: ${result.timestamp}</p>`,
+            result.timestamp && `<p class="body2">${result.timestamp}</p>`,
             // currentQuery && !!result.similarity && `<p class="body2">Search Score: ${(result.similarity * 100).toFixed(2)}%</p>`,
           ].filter(Boolean).join('')
 
