@@ -580,7 +580,7 @@
   
     background-color: rgba(var(--on-background-rgb), 0);
 
-    transition: background-color var(--timing);
+    transition: background var(--timing);
   }
   .clickable_card.active:before,
   .clickable_card:hover:before {
