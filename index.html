@@ -24,17 +24,32 @@
         margin-right: var(--basis_x2);
       }
 
-      .card {
+      .clickable_card {
+        position: relative;
         background: rgba(var(--on-background-contrast-rgb), var(--alpha-less));
         box-shadow: inset 0 0 0 1px rgba(var(--on-background-contrast-rgb), var(--alpha-less));
-        padding: var(--basis_x2);
-        transform: scale(1);
-        transition: transform var(--timing);
+        padding: var(--basis_x4);
+        border-radius: var(--basis_x2);
       }
-      .card:hover {
-        transform: scale(1.05);
+      .clickable_card.active:before, .clickable_card:hover:before {
+        background-color: rgba(80, 35, 121, .2);
+        background-color: rgba(var(--on-background-rgb), var(--alpha-less));
       }
-      .card img {
+      .clickable_card:before {
+        z-index: -1;
+        content: "";
+        position: absolute;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        pointer-events: none;
+        border-radius: var(--borderRadius);
+        background-color: rgba(80, 35, 121, 0);
+        background-color: rgba(var(--on-background-rgb), 0);
+        transition: background-color var(--timing);
+      }
+      .clickable_card img {
         max-width: 100%;
       }
 
@@ -93,7 +108,7 @@
 
     <div class="search_bar">
       <input type="text" id="query" placeholder="Search…">
-      <select id="sortBy">
+      <select id="sortBy" class="text">
         <option value="date_desc">Sort by Date Descending</option>
         <option value="date_asc">Sort by Date Ascending</option>
         <option value="similarity_desc">Sort by Similarity Descending</option>
@@ -184,7 +199,7 @@
           const link = `https://drive.google.com/file/d/${fileID}/view`;
 
           const card = document.createElement('a');
-          card.className = 'card';
+          card.className = 'clickable_card';
           card.target = '_blank';
           card.href = 'link';
 
